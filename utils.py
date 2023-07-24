@@ -4,6 +4,7 @@ from torchvision import transforms
 from torch import nn
 import torch.nn.functional as F
 from torchattacks import FGSM, PGD, CW, AutoAttack
+from torch_dct import dct, idct
 
 def read_img(filename):
     img = cv2.imread(filename)
@@ -32,3 +33,11 @@ def attack_1_img(model,img_tensor,label,atk_name,**kwargs):
     atk = eval(atk_name)(model,**kwargs)
     adv_img_tensor = atk(img_tensor.unsqueeze(0).cuda(),labels = torch.Tensor([label]).cuda().type(torch.LongTensor))
     return adv_img_tensor[0]
+
+def low_mask(input,n):
+    res = torch.zeros_like(input)
+    res[:,:n,:n] = input[:,:n,:n]
+    return res
+
+def low_freq_mask(input,n):
+    return idct(low_mask(dct(input),512))

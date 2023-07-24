@@ -8,7 +8,7 @@ from torchattacks import FGSM, PGD, CW, AutoAttack
 def read_img(filename):
     img = cv2.imread(filename)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    img_tensor = transforms.ToTensor()(img)
+    img_tensor = transforms.ToTensor()(img).cuda()
     return img_tensor
 
 def show_tensor(tensor,width=200,height=200):
